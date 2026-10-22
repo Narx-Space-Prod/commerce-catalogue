@@ -41,3 +41,15 @@ Metrics are exposed at `/metrics`. SIGTERM drains active HTTP requests.
 Use the integrated preview in `platform-gitops/local/compose.yaml` for all services.
 
 Imported with its license from [boutique-catalogue, revision 27aa280](https://github.com/Local-Narx-Space/boutique-catalogue/tree/27aa28010a8f9552409d304ebb32f3db9dcf5ba9).
+
+## Delivery
+
+PRs run shared workflow/secret checks, then component Docker tests, a non-root runtime
+check, a blocking HIGH/CRITICAL vulnerability scan and SBOM generation. Trusted main
+can publish the exact tested image to ECR through OIDC and sign its digest, provenance
+and SBOM. Publishing is held unless `DELIVERY_ENABLED=true`; no AWS resources are
+created by this repository. GitOps verifies release records and promotes the same
+digests through reviewed dev, QA and production PRs.
+
+App credentials, AWS setup and local registry refresh are documented in the single
+[project guide](https://github.com/Narx-Space-Prod/platform-infrastructure/blob/main/DOC.md).
