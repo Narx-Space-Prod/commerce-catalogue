@@ -15,7 +15,8 @@ Missing or unavailable commerce configuration returns 503 instead of demo prices
 Readiness checks the upstream catalogue; liveness remains independent of that dependency.
 AWS deployment and GitOps promotion are separate implementation milestones.
 All changes after repository initialization go through feature branches and pull requests.
-These private repositories use GitHub Free; review enforcement requires the planned Team upgrade.
+These repositories are public on GitHub Free. Protected `main` requires a CODEOWNER
+approval, passing CI checks and resolved conversations; administrators follow the same rules.
 
 ## Application delivery contract
 
