@@ -2,14 +2,18 @@
 
 Owner: Catalogue team.
 
-Products, prices and inventory. This service owns its persistence and exposes versioned APIs; other services must not query its tables directly.
+Public product read API. During application migration, the orders commerce core owns
+inventory and its transactional persistence; this service reads it over HTTP. It does
+not query another service's database and is not yet an independently owned inventory store.
 
 Project guide: [DOC.md](https://github.com/Narx-Space-Prod/platform-infrastructure/blob/main/DOC.md).
-The guide is introduced in the infrastructure foundation PR and becomes available on main after review.
 
 ## Current state
 
-Foundation only. Application code, cloud infrastructure and end-to-end delivery are not deployed.
+Application source is in `main.go` and `metrics.go`, with tests in `main_test.go`.
+Missing or unavailable commerce configuration returns 503 instead of demo prices.
+Readiness checks the upstream catalogue; liveness remains independent of that dependency.
+AWS deployment and GitOps promotion are separate implementation milestones.
 All changes after repository initialization go through feature branches and pull requests.
 These private repositories use GitHub Free; review enforcement requires the planned Team upgrade.
 
@@ -22,5 +26,17 @@ These private repositories use GitHub Free; review enforcement requires the plan
 - Expose metrics; propagate request/event IDs across API and queue boundaries.
 - Publish immutable images to ECR and promote the same digest between environments.
 
-The foundation workflow only validates workflow syntax. Application tests and builds will be
-added with application source; a passing foundation check does not certify an application release.
+## Build and preview
+
+```bash
+docker build --target runtime -t narx-local/catalogue:dev .
+```
+
+The build checks Go formatting, runs vet and tests, then compiles the runtime binary.
+The server listens on port 8081. Set `COMMERCE_URL` to the orders API, such as
+`http://orders:8083`. Product routes are `/products` and `/products/{id}`.
+Metrics are exposed at `/metrics`. SIGTERM drains active HTTP requests.
+
+Use the integrated preview in `platform-gitops/local/compose.yaml` for all services.
+
+Imported with its license from [boutique-catalogue, revision 27aa280](https://github.com/Local-Narx-Space/boutique-catalogue/tree/27aa28010a8f9552409d304ebb32f3db9dcf5ba9).
