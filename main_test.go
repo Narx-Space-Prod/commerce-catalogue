@@ -27,6 +27,17 @@ func TestHealthResponsesAreNotCached(t *testing.T) {
 	}
 }
 
+func TestJSONResponsesDisableContentSniffing(t *testing.T) {
+	configureCatalogue(t)
+	for _, path := range []string{"/health/live", "/products", "/products/missing"} {
+		w := httptest.NewRecorder()
+		handler().ServeHTTP(w, httptest.NewRequest("GET", path, nil))
+		if w.Header().Get("Content-Type") != "application/json" || w.Header().Get("X-Content-Type-Options") != "nosniff" {
+			t.Fatalf("%s has unexpected JSON security headers", path)
+		}
+	}
+}
+
 func TestProducts(t *testing.T) {
 	configureCatalogue(t)
 	w := httptest.NewRecorder()
