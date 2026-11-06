@@ -53,3 +53,11 @@ digests through reviewed dev, QA and production PRs.
 
 App credentials, AWS setup and local registry refresh are documented in the single
 [project guide](https://github.com/Narx-Space-Prod/platform-infrastructure/blob/main/DOC.md).
+
+## Test coverage
+
+Run `go test -count=1 -coverprofile=coverage.out -covermode=atomic ./...`.
+Inspect it with `go tool cover -func=coverage.out` or
+`go tool cover -html=coverage.out`. CI exports the profile through the Docker
+`analysis` target, reusing the test stage required by `runtime`; Sonar imports
+it before publication. No coverage tools or reports enter the runtime image.
