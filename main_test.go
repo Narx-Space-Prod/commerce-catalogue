@@ -16,6 +16,17 @@ func TestServiceIdentityHeader(t *testing.T) {
 	}
 }
 
+func TestHealthResponsesAreNotCached(t *testing.T) {
+	configureCatalogue(t)
+	for _, path := range []string{"/health/live", "/health/ready"} {
+		w := httptest.NewRecorder()
+		handler().ServeHTTP(w, httptest.NewRequest("GET", path, nil))
+		if w.Code != http.StatusOK || w.Header().Get("Cache-Control") != "no-store" {
+			t.Fatalf("%s returned status %d and Cache-Control %q", path, w.Code, w.Header().Get("Cache-Control"))
+		}
+	}
+}
+
 func TestProducts(t *testing.T) {
 	configureCatalogue(t)
 	w := httptest.NewRecorder()

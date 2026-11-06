@@ -60,9 +60,11 @@ func catalogueProducts() ([]Product, error) {
 func handler() http.Handler {
 	m := http.NewServeMux()
 	m.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
 		reply(w, 200, map[string]string{"status": "ok"})
 	})
 	m.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
 		if _, err := catalogueProducts(); err != nil {
 			reply(w, 503, map[string]string{"status": "unavailable"})
 			return
