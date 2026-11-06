@@ -7,6 +7,15 @@ import (
 	"testing"
 )
 
+func TestServiceIdentityHeader(t *testing.T) {
+	configureCatalogue(t)
+	w := httptest.NewRecorder()
+	handler().ServeHTTP(w, httptest.NewRequest("GET", "/health/live", nil))
+	if got := w.Header().Get("X-Service-Name"); got != "commerce-catalogue" {
+		t.Fatalf("X-Service-Name = %q", got)
+	}
+}
+
 func TestProducts(t *testing.T) {
 	configureCatalogue(t)
 	w := httptest.NewRecorder()

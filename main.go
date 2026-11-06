@@ -96,6 +96,7 @@ func handler() http.Handler {
 		_, _ = w.Write([]byte(exposition()))
 	})
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Service-Name", "commerce-catalogue")
 		t := time.Now()
 		sw := &statusWriter{ResponseWriter: w, status: 200}
 		m.ServeHTTP(sw, r)
