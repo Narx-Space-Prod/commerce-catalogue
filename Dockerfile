@@ -9,6 +9,7 @@ FROM scratch AS analysis
 COPY --from=build /coverage.out /coverage.out
 
 FROM alpine:3.23@sha256:85fe1e81d6758c208f3e1eed4338a1997e19d4be002d4dd32d3100c9a8c010a0 AS runtime
+RUN apk add --no-cache --upgrade 'musl>=1.2.5-r24' 'musl-utils>=1.2.5-r24' 'zlib>=1.3.2-r1'
 COPY --from=build --chmod=755 /catalogue /usr/local/bin/catalogue
 USER 10001:10001
 EXPOSE 8081
